@@ -1,6 +1,10 @@
-# my-very-last-javascript
+# 내 생에 마지막 JavaScript
 
-<내 생에 마지막 JavaScript>를 들으며 공부 내용을 기록합니다.
+<내 생에 마지막 JavaScript> 강의를 들으며 공부 내용을 기록합니다.
+
+## 목표
+
+- 자바스크립트의 기초 개념을 설명할 수 있도록 공부한다
 
 ## Index
 
