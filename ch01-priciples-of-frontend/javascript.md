@@ -184,3 +184,48 @@
 - Q. 자바스크립트는 함수도 객체다?
   - A. JS에서 함수는 객체이므로, 함수에 프로퍼티와 메서드를 추가할 수 있음
     - 함수에 언제든지 속성 추가가 가능 why? 프로토타입 기반의 상속 매커니즘은 동적으로 속성 등을 추가할 수 있도록 함
+
+---
+
+# 13. JavaScript 필수 개념 - 표준 내장 객체와 DOM API
+
+- 표준 내장 객체 : JS 엔진에 있는 객체들
+  - 필요할 때 마다 어떤 환경에서도 사용할 수 있게 구현되어 있음
+  - 엔진 : V8, SpiderMonkey
+  - ECMA Script의 표준을 따름
+- DOM API : 브라우저에 내장되어 있는 API
+
+## 표준 내장 객체
+
+### 표준 내장 객체의 종류
+
+필요할 때 마다 mdn에서 찾아 보는 것이 효과적
+
+1. Object : 모든 객체의 기본
+2. Function : 모든 자바스크립트 함수의 기본이 되는 객체
+3. Boolean : 불리언 타입을 다루는 객체
+4. Symbol : 고유하고 변경 불가능한 데이터 타입
+5. Error : 에러 처리에 사용되는 객체
+6. Number : 숫자를 다루는 객체
+7. Math : 수학적 연산을 위한 속성과 메서드를 가진 객체
+8. String : 문자열을 다루는 객체
+9. Date : 날짜와 시간을 다루는 객체
+10. RegExp : 정규 표현식을 다루는 객체
+
+## DOM API
+
+브라우저 환경에 특화된 기능을 제공하는 내장 도구
+HTML 문서의 콘텐츠와 구조를 동적으로 조작할 수 있는 인터페이스 제공
+
+### Document Object Model
+
+- 문서 접근 (Document Access) : document 전체 HTML 문서에 접근. getElementById, querySelector
+- 요소 조작 (Element Manipulation) : createElement, appendChild
+- 이벤트 처리 (Event Handling) : addEventListener, removeEventListener
+- 동적 조작 (Dynamic Manipulation) : AJAX 와 같은 기술로 비동기 통신
+
+- 궁금하면 읽어보기 [만들어가며 알아보는 React](https://techblog.woowahan.com/8311/)
+  - DOM과 DOM API의 복잡성
+  - React가 DOM API를 다루는 방식
+  - React가 DOM을 효율적으로 관리하고 업데이트하는 방식
+  - 가상 DOM API를 이용해 리얼 DOM으로 렌더링하기
