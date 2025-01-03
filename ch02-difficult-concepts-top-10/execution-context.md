@@ -125,14 +125,115 @@ outerFn();
 
 ## 스택(Stack)과 큐(Queue)
 
-- 스택 : 후입 선출 (LIFO) _Last In First Out_
+- 스택
 
+  - 후입 선출 (LIFO) _Last In First Out_
   - 마지막에 들어온 데이터가 가장 먼저 나가는 구조
   - 푸시(push) : 데이터 추가
   - 팝(pop) : 데이터 제거
   - 실행 컨텍스트(호출 스택)에 사용
 
-- 큐 : 선입 선출 (FIFO) _First In First Out_
+- 큐
+  - 선입 선출 (FIFO) _First In First Out_
   - 인큐(enqueue) : 데이터 추가
   - 디큐(dequeue) : 데이터 제거
   - 이벤트 루프, 네트워크 요청 처리 등에 사용
+
+## 활성 객체 Activation Object
+
+실행 컨텍스트의 일부로서 특정 스코프의 변수와 함수 선언들을 저장하는 객체
+
+- Lexical Envrionment
+- 실행 컨텍스트와 관련된 스코프와 식별자에 대한 정보를 포함
+- _Environment Record_
+- _외부 렉시컬 환경 참조 (Outer lexical envrionment reference)_
+
+  - 외부 렉시컬 환경 참조 때문에 가능하다?
+
+### 예시
+
+```
+/*
+  실행 컨텍스트 관점에서 클로저가 실행되는 예시
+  - 내부 구현 원리는? 활성 객체 Activation Object
+*/
+const outer = function () {
+  let a = 1;
+  const inner = function () {
+    return ++a;
+  };
+  return inner;
+};
+
+const count = outer();
+console.log(count()); // 2
+console.log(count()); // 3
+```
+
+#### outer 함수의 LexicalEnvrionment
+
+```
+  // LexicalEnvironment는 일종의 객체
+  'outer 함수의 LexicalEnvrionment' : {
+  EnvironmentRecord : {
+  a : 1, // outer 함수 내부의 지역 변수
+  inner : // inner 함수의 참조
+  },
+  OuterLexicalEnvrionment : // 전역 환경의 LexicalEnvironment 참조
+  }
+```
+
+#### 클로저가 어떻게 생성되는지 inner함수의 LexicalEnvrionment 알아보기
+
+```
+  'inner 실행 컨텍스트' : {
+    LexicalEnvrionment : {
+      EnvrionmentRecord : {
+        // inner 함수 내부의 지역 변수들이 여기에 포함될 것 (이 경우는 비어 있음 - 별도의 함수나 변수가 없었기 때문)
+      },
+      OuterLexcialEnvrionment : 'outer 함수의 LexcialEnvrionment' // 이 참조 덕분에 inner 함수가 outer 함수의 변수 a에 접근 가능
+    }
+  }
+```
+
+### 함수 스코프의 원리 구현
+
+```
+const a = 1;
+const outerFn1 = () => {
+	console.log('a: ', a);
+};
+outerFn1(); // a: 1 <- outerFn1가 전역 변수 a에 접근 가능함을 의미
+```
+
+- a: 1 <- outerFn1가 전역 변수 a에 접근 가능함을 의미
+- 어떻게 가능하냐? LexicalEnvrionment와 Outer LexicalEnvironment 때문
+  - Outer Lexical Environment는 outerFn1의 외부 환경, 즉 전역 환경에 관한 것들을 참조
+  - outerFn1 에서 변수 a에 대해 참조하려고 할 때
+    - outerFn1에서 변수 a에 대해 먼저 찾고
+    - 만약 함수 내부에 없다면 Outer Lexical Environment를 통해 상위 스코프인 전역 환경에서 변수 a를 찾게 됨
+
+## 실행 컨텍스트 간단 정리
+
+실행 컨텍스트? 코드가 실행되는 환경이나 상태
+
+- 주요 구성 요소 : 변수 환경, this, 스코프 체인
+
+  - 변수 환경 : 함수, 전역 코드 내에서 선언된 변수와 함수를 포함
+    - 코드가 실행되는 동안 지속적으로 갱신됨
+  - 실행 컨텍스트는 this 키워드의 값을 결정
+    - 이 값은 함수가 어떻게 호출되었는지에 따라서 다르게 결정됨
+  - 실행 컨텍스트는 하위 스코프 체인을 형성
+    - 현재 컨텍스트의 변수 환경과 상위 컨텍스트의 변수 환경을 연결
+
+- 실행 컨텍스트는 함수가 호출이 될 때마다 생성됨 => 콜 스택을 형성하는 기반
+- 전역 실행 컨텍스트는 계속 실행됨 -> 전역 변수가 많으면 메모리 누수 가능성 증가
+- 실행 컨텍스트의 스코프 체인은 클로저의 구현과 밀접한 관련이 있음
+- 실행 컨텍스트의 핵심 구성 요소 중 하나인 LexicalEnvironment
+  - EnvironmentRecord : 현재 컨텍스트 내의 식별자와 그에 연결된 변수, 함수 선언 저장
+  - OuterLexcialEnvironment : 상위 컨텍스트의 LexicalEnvironment를 참조
+    - 이 참조 덕분에 함수는 상위 스코프의 변수에 접근 가능
+    - => 함수 스코프와 클로저의 구현에 필수적인 요소
+- 호이스팅도 실행 컨텍스트와 밀접한 관련 있어
+  - 변수와 함수의 선언은 호이스팅이 되고, 호이스팅은 코드가 실제로 실행되기 전에 처리됨
+- 실행 컨텍스트는 자바스크립트 내부 메커니즘

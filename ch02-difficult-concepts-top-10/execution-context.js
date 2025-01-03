@@ -57,3 +57,61 @@ outerFn();
             -> outerFn() EC ->  outerFn() EC -> outerFn() EC -> 
   global EC    global EC        global EC       global EC       global EC
 */
+
+/*
+  실행 컨텍스트 관점에서 클로저가 실행되는 예시
+    - 내부 구현 원리는? 활성 객체 Activation Object
+*/
+
+const outer = function () {
+	let a = 1;
+	const inner = function () {
+		return ++a;
+	};
+	return inner;
+};
+
+const count = outer();
+
+console.log(count()); // 2
+console.log(count()); // 3
+
+/*
+  LexicalEnvironment는 일종의 객체
+  'outer 함수의 LexicalEnvrionment' : {
+    EnvironmentRecord : {
+      a : 1, // outer 함수 내부의 지역 변수
+      inner : // inner 함수의 참조
+    },
+    OuterLexicalEnvrionment : // 전역 환경의 LexicalEnvironment 참조
+  }
+*/
+
+/*
+  함수 스코프의 원리 구현
+*/
+const a = 1;
+const outerFn1 = () => {
+	console.log('a: ', a);
+};
+outerFn1(); // a: 1 <- outerFn1가 전역 변수 a에 접근 가능함을 의미
+/*
+  a: 1 <- outerFn1가 전역 변수 a에 접근 가능함을 의미
+  어떻게 가능하냐? LexicalEnvrionment와 Outer LexicalEnvironment 때문
+  - Outer Lexical Environment는 outerFn1의 외부 환경, 즉 전역 환경에 관한 것들을 참조
+  - outerFn1 에서 변수 a에 대해 참조하려고 할 때
+    - outerFn1에서 변수 a에 대해 먼저 찾고
+    - 만약 함수 내부에 없다면 Outer Lexical Environment를 통해 상위 스코프인 전역 환경에서 변수 a를 찾게 됨
+*/
+
+/*
+  클로저가 어떻게 생성되는지 inner함수의 LexicalEnvrionment 알아보기
+  'inner 실행 컨텍스트' : {
+    LexicalEnvrionment : {
+      EnvrionmentRecord : {
+        // inner 함수 내부의 지역 변수들이 여기에 포함될 것 (이 경우는 비어 있음 - 별도의 함수나 변수가 없었기 때문)
+      },
+      OuterLexcialEnvrionment : 'outer 함수의 LexcialEnvrionment' // 이 참조 덕분에 inner 함수가 outer 함수의 변수 a에 접근 가능
+    }
+  }
+*/
