@@ -5,40 +5,127 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>To Do List with Vanilla JS</title>
 	</head>
+	<style>
+		/* * {
+			margin: 0;
+			padding: 0;
+		}
 
+		body {
+			height: 100vh;
+			background: linear-gradient(180deg, #3ac6f3 0%, rgba(200, 180, 180, 0.4) 40%, rgba(255, 0, 0, 0.56) 100%);
+			overflow: hidden;
+		}
+
+		#app {
+			background: #fff;
+			max-width: 500px;
+			width: 100%;
+			margin: 100px auto;
+			padding: 20px;
+			border-radius: 6px;
+			box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+		}
+
+		#header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		#counter span {
+			margin-right: 0.5rem;
+		}
+
+		#inputField {
+			margin: 20px 0;
+			width: 100%;
+			display: flex;
+			height: 2.5rem;
+		}
+
+		#inputField input {
+			width: 85%;
+			height: 100%;
+			border-radius: 3px;
+			border: 1px solid #ccc;
+			font-size: 0.8rem;
+			padding-left: 15px;
+			outline: none;
+		}
+
+		#inputField input:focus {
+			border-color: #ff0051;
+		}
+
+		#inputField button {
+			width: 50px;
+			height: 100%;
+			border: none;
+			color: #fff;
+			margin-left: 5px;
+			font-size: 21px;
+			outline: none;
+			background: #3ac6f3;
+			border-radius: 3px;
+		}
+
+		#inputField button:hover {
+			background: #ff0051;
+		}
+
+		#itemListContainer {
+			max-height: 250px;
+			overflow: scroll;
+		}
+
+		#itemListContainer li {
+			position: relative;
+			display: flex;
+			justify-content: space-between;
+			list-style: none;
+			height: 3rem;
+			line-height: 3rem;
+			margin-bottom: 0.5rem;
+			overflow: hidden;
+			border-radius: 5px;
+		}
+
+		#itemListContainer div {
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
+		}
+		#itemListContainer input {
+			margin: 1rem;
+			transition-duration: 0.5s;
+			opacity: 1;
+		}
+		#itemListContainer button {
+			width: 3rem;
+			margin: 0.3rem 1rem;
+			width: 3rem;
+			border: none;
+			color: #fff;
+			margin-left: 5px;
+			font-size: 0.8rem;
+			font-weight: bold;
+			outline: none;
+			background: #f97;
+			border-radius: 3px;
+			transition-duration: 0.5s;
+			opacity: 1;
+		}
+		#itemListContainer button:hover {
+			background-color: #ddd;
+		}
+		#itemListContainer span {
+			width: 100%;
+			text-align: 'left';
+		} */
+	</style>
 	<body>
 		<script>
-			/* HTML 레이아웃
-			 * wrapper
-			 * - header
-			 *   - title
-			 *   - counter
-			 *     - 'Total'
-			 *     - 0
-			 *     - 'Complete'
-			 *     - 0
-			 * - input-field
-			 *   - input
-			 *   - button
-			 * - item-list-container
-			 *   - ul
-			 *     - li
-			 *       - div
-			 *         - input(checkbox)
-			 *         - span
-			 *         - button 'remove'
-			 */
-			/* 			const wrapper = document.createElement('div');
-			const header = document.createElement('div');
-			const inputField = document.createElement('div');
-			const itemListContainer = document.createElement('div');
-			wrapper.appendChild(header);
-			wrapper.appendChild(inputField);
-			wrapper.appendChild(itemListContainer);
-			document.body.appendChild(wrapper);
-
-			console.log(createElement({ tagName: 'div', properties: { innerText: 'create element' }, parent: document.body, count: 10 })); */
-
 			const app = createElement({
 				tagName: 'div',
 				properties: { id: 'app' },
@@ -121,6 +208,158 @@
 					},
 				],
 			});
+
+			/* 
+      인라인 스타일 작성법
+      app.style.background = '#000';
+			app.style.setProperty('background', '#ff0');
+      app.style.removeProperty('box-shadow');
+      
+			app.style.cssText = ` background: #fff;
+      max-width: 500px;
+      width: 100%;
+      margin: 100px auto;
+      padding: 20px;
+      border-radius: 6px;
+      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);`;
+      */
+			/* 스타일 시트
+			document.styleSheets[0].insertRule(`#app {
+			background: #fff;
+			max-width: 500px;
+			width: 100%;
+			margin: 100px auto;
+			padding: 20px;
+			border-radius: 6px;
+			box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+		  }`);
+			// document.styleSheets[0].deleteRule(0);
+
+			console.log(app.style.background); // 인라인 작성법으로 작성하지 않으면 이 방식으로는 접근 불가
+			console.log(getComputedStyle(app).background);
+      */
+			const stylesheet = new CSSStyleSheet();
+			stylesheet.replace(`
+      * {
+			margin: 0;
+			padding: 0;
+		}
+
+		body {
+			height: 100vh;
+			background: linear-gradient(180deg, #3ac6f3 0%, rgba(200, 180, 180, 0.4) 40%, rgba(255, 0, 0, 0.56) 100%);
+			overflow: hidden;
+		}
+
+		#app {
+			background: #fff;
+			max-width: 500px;
+			width: 100%;
+			margin: 100px auto;
+			padding: 20px;
+			border-radius: 6px;
+			box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+		}
+
+		#header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		#counter span {
+			margin-right: 0.5rem;
+		}
+
+		#inputField {
+			margin: 20px 0;
+			width: 100%;
+			display: flex;
+			height: 2.5rem;
+		}
+
+		#inputField input {
+			width: 85%;
+			height: 100%;
+			border-radius: 3px;
+			border: 1px solid #ccc;
+			font-size: 0.8rem;
+			padding-left: 15px;
+			outline: none;
+		}
+
+		#inputField input:focus {
+			border-color: #ff0051;
+		}
+
+		#inputField button {
+			width: 50px;
+			height: 100%;
+			border: none;
+			color: #fff;
+			margin-left: 5px;
+			font-size: 21px;
+			outline: none;
+			background: #3ac6f3;
+			border-radius: 3px;
+		}
+
+		#inputField button:hover {
+			background: #ff0051;
+		}
+
+		#itemListContainer {
+			max-height: 250px;
+			overflow: scroll;
+		}
+
+		#itemListContainer li {
+			position: relative;
+			display: flex;
+			justify-content: space-between;
+			list-style: none;
+			height: 3rem;
+			line-height: 3rem;
+			margin-bottom: 0.5rem;
+			overflow: hidden;
+			border-radius: 5px;
+		}
+
+		#itemListContainer div {
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
+		}
+		#itemListContainer input {
+			margin: 1rem;
+			transition-duration: 0.5s;
+			opacity: 1;
+		}
+		#itemListContainer button {
+			width: 3rem;
+			margin: 0.3rem 1rem;
+			width: 3rem;
+			border: none;
+			color: #fff;
+			margin-left: 5px;
+			font-size: 0.8rem;
+			font-weight: bold;
+			outline: none;
+			background: #f97;
+			border-radius: 3px;
+			transition-duration: 0.5s;
+			opacity: 1;
+		}
+		#itemListContainer button:hover {
+			background-color: #ddd;
+		}
+		#itemListContainer span {
+			width: 100%;
+			text-align: 'left';
+		}`);
+			// console.log(stylesheet);
+			// document.header.appendChild(stylesheet); Node가 아니기 떄문에 appendChild 불가
+			document.adoptedStyleSheets = [stylesheet];
 
 			function createElement({ tagName, properties, parent, children, count = 1 }) {
 				const create = () => {
