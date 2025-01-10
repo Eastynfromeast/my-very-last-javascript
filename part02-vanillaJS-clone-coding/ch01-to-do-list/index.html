@@ -212,8 +212,19 @@
           -> 전체 카운터가 업데이트 되어야 함
       */
 
+			/*
+        예외 처리
+        - 빈 값이거나 중복 값이면 에러 메시지를 보여주고 추가하지 않기
+      */
+
 			const addButton = document.querySelector('#inputField button');
 			addButton.addEventListener('click', () => {
+				const inputText = addButton.previousSibling.value;
+				if (!validCheck(inputText)) {
+					return;
+				}
+				// 빈 값이거나 중복 값이면 에러 메시지를 보여주고 추가하지 않기
+
 				// 아이템을 생성
 				addItem(
 					registerEvents(
@@ -228,7 +239,24 @@
 					)
 				);
 				updateCounter();
+				addButton.previousSibling.value = '';
 			});
+
+			function validCheck(inputText) {
+				inputText = inputText.trim();
+				if (inputText === '') {
+					alert('할 일을 적어 주세요');
+					return false;
+				}
+
+				const itemList = document.getElementById('itemList');
+				const found = Array.from(itemList.children).find(child => child.children[1].innerText === inputText);
+				if (found) {
+					alert('중복된 값입니다');
+					return false;
+				}
+				return true;
+			}
 
 			function addItem(item) {
 				const itemList = document.getElementById('itemList');
@@ -238,7 +266,7 @@
 			function registerEvents(item) {
 				const [checkbox, text, removeButton] = item.children;
 				checkbox.addEventListener('change', () => {
-					checkbox.checked ? (text.style.textDecoration = 'line-through') : (text.style.textDecoration = 'none'); // 아래 주석 처리한 구문보다 의미가 더 명확함
+					checkbox.checked ? (text.style.textDecoration = 'line-through') : (text.style.textDecoration = 'none');
 					// 완료 카운터 업데이트
 					updateCounter();
 				});
@@ -259,7 +287,6 @@
 				counter.children[1].innerText = '' + itemList.children.length;
 				const completeCount = Array.from(itemList.children).filter(child => child.firstChild.checked).length;
 				counter.lastChild.innerText = '' + completeCount;
-				// console.log('total : ', itemList.children.length, ' completed : ', completeCount);
 			}
 
 			function createElement({ tagName, properties, parent, children, count = 1 }) {
