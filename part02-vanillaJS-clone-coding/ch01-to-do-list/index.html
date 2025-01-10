@@ -5,125 +5,6 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>To Do List with Vanilla JS</title>
 	</head>
-	<style>
-		/* * {
-			margin: 0;
-			padding: 0;
-		}
-
-		body {
-			height: 100vh;
-			background: linear-gradient(180deg, #3ac6f3 0%, rgba(200, 180, 180, 0.4) 40%, rgba(255, 0, 0, 0.56) 100%);
-			overflow: hidden;
-		}
-
-		#app {
-			background: #fff;
-			max-width: 500px;
-			width: 100%;
-			margin: 100px auto;
-			padding: 20px;
-			border-radius: 6px;
-			box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
-		}
-
-		#header {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-		}
-
-		#counter span {
-			margin-right: 0.5rem;
-		}
-
-		#inputField {
-			margin: 20px 0;
-			width: 100%;
-			display: flex;
-			height: 2.5rem;
-		}
-
-		#inputField input {
-			width: 85%;
-			height: 100%;
-			border-radius: 3px;
-			border: 1px solid #ccc;
-			font-size: 0.8rem;
-			padding-left: 15px;
-			outline: none;
-		}
-
-		#inputField input:focus {
-			border-color: #ff0051;
-		}
-
-		#inputField button {
-			width: 50px;
-			height: 100%;
-			border: none;
-			color: #fff;
-			margin-left: 5px;
-			font-size: 21px;
-			outline: none;
-			background: #3ac6f3;
-			border-radius: 3px;
-		}
-
-		#inputField button:hover {
-			background: #ff0051;
-		}
-
-		#itemListContainer {
-			max-height: 250px;
-			overflow: scroll;
-		}
-
-		#itemListContainer li {
-			position: relative;
-			display: flex;
-			justify-content: space-between;
-			list-style: none;
-			height: 3rem;
-			line-height: 3rem;
-			margin-bottom: 0.5rem;
-			overflow: hidden;
-			border-radius: 5px;
-		}
-
-		#itemListContainer div {
-			width: 100%;
-			display: flex;
-			justify-content: space-between;
-		}
-		#itemListContainer input {
-			margin: 1rem;
-			transition-duration: 0.5s;
-			opacity: 1;
-		}
-		#itemListContainer button {
-			width: 3rem;
-			margin: 0.3rem 1rem;
-			width: 3rem;
-			border: none;
-			color: #fff;
-			margin-left: 5px;
-			font-size: 0.8rem;
-			font-weight: bold;
-			outline: none;
-			background: #f97;
-			border-radius: 3px;
-			transition-duration: 0.5s;
-			opacity: 1;
-		}
-		#itemListContainer button:hover {
-			background-color: #ddd;
-		}
-		#itemListContainer span {
-			width: 100%;
-			text-align: 'left';
-		} */
-	</style>
 	<body>
 		<script>
 			const app = createElement({
@@ -190,60 +71,17 @@
 					{
 						tagName: 'ul',
 						properties: { id: 'itemList' },
-						children: [
-							{
-								tagName: 'li',
-								children: [
-									{
-										tagName: 'div',
-										children: [
-											{ tagName: 'input', properties: { type: 'checkbox' } },
-											{ tagName: 'span', properties: { innerText: '할 일' } },
-											{ tagName: 'button', properties: { innerText: 'Remove' } },
-										],
-									},
-								],
-							},
-						],
+						children: [],
 					},
 				],
 			});
 
-			/* 
-      인라인 스타일 작성법
-      app.style.background = '#000';
-			app.style.setProperty('background', '#ff0');
-      app.style.removeProperty('box-shadow');
-      
-			app.style.cssText = ` background: #fff;
-      max-width: 500px;
-      width: 100%;
-      margin: 100px auto;
-      padding: 20px;
-      border-radius: 6px;
-      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);`;
-      */
-			/* 스타일 시트
-			document.styleSheets[0].insertRule(`#app {
-			background: #fff;
-			max-width: 500px;
-			width: 100%;
-			margin: 100px auto;
-			padding: 20px;
-			border-radius: 6px;
-			box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
-		  }`);
-			// document.styleSheets[0].deleteRule(0);
-
-			console.log(app.style.background); // 인라인 작성법으로 작성하지 않으면 이 방식으로는 접근 불가
-			console.log(getComputedStyle(app).background);
-      */
 			const stylesheet = new CSSStyleSheet();
 			stylesheet.replace(`
       * {
 			margin: 0;
 			padding: 0;
-		}
+		  }
 
 		body {
 			height: 100vh;
@@ -311,6 +149,7 @@
 		#itemListContainer {
 			max-height: 250px;
 			overflow: scroll;
+      scrollbar-width: none;
 		}
 
 		#itemListContainer li {
@@ -355,11 +194,68 @@
 		}
 		#itemListContainer span {
 			width: 100%;
-			text-align: 'left';
+			text-align: left;
 		}`);
 			// console.log(stylesheet);
 			// document.header.appendChild(stylesheet); Node가 아니기 떄문에 appendChild 불가
 			document.adoptedStyleSheets = [stylesheet];
+
+			/*
+        기능 구현
+        1. 인풋에 할 일을 입력하고 추가 버튼을 클릭하면
+          -> 아이템이 리스트에 추가되고 Total 카운터가 업데이트
+
+        2. 할일의 체크 박스를 클릭하면 취소선이 표시되고
+          -> Completed 카운터가 업데이트
+
+        3. 삭제 버튼을 클릭하면 아이템이 삭제되고
+          -> 전체 카운터가 업데이트 되어야 함
+      */
+
+			const addButton = document.querySelector('#inputField button');
+			addButton.addEventListener('click', () => {
+				// 컨테이너 가져오기
+				const itemList = document.getElementById('itemList');
+				// 아이템을 생성
+				const item = createElement({
+					tagName: 'li',
+					parent: itemList,
+					children: [
+						{ tagName: 'input', properties: { type: 'checkbox' } },
+						{ tagName: 'span', properties: { innerText: addButton.previousSibling.value } },
+						{ tagName: 'button', properties: { innerText: 'Remove' } },
+					],
+				});
+
+				const [checkbox, text, removeButton] = item.children;
+				checkbox.addEventListener('change', () => {
+					checkbox.checked ? (text.style.textDecoration = 'line-through') : (text.style.textDecoration = 'none'); // 아래 주석 처리한 구문보다 의미가 더 명확함
+					// text.style.textDecoration = checkbox.checked ? 'line-through' : 'none';
+
+					// 완료 카운터 업데이트
+					const completeCount = Array.from(itemList.children).filter(child => child.firstChild.checked).length;
+					const counter = document.getElementById('counter');
+					counter.lastChild.innerText = '' + completeCount;
+					console.log('checkbox changed');
+				});
+
+				// 토탈 카운터를 업데이트
+				const counter = document.getElementById('counter');
+				counter.children[1].innerText = '' + itemList.children.length;
+
+				console.log('click', counter);
+
+				// 삭제 버튼 이벤트 처리
+				removeButton.addEventListener('click', () => {
+					item.remove();
+					// 카운터 전체 업데이트
+					const counter = document.getElementById('counter');
+					counter.children[1].innerText = '' + itemList.children.length;
+					// 완료 카운터 업데이트
+					const completeCount = Array.from(itemList.children).filter(child => child.firstChild.checked).length;
+					counter.lastChild.innerText = '' + completeCount;
+				});
+			});
 
 			function createElement({ tagName, properties, parent, children, count = 1 }) {
 				const create = () => {
