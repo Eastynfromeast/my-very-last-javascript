@@ -214,48 +214,53 @@
 
 			const addButton = document.querySelector('#inputField button');
 			addButton.addEventListener('click', () => {
-				// 컨테이너 가져오기
-				const itemList = document.getElementById('itemList');
 				// 아이템을 생성
-				const item = createElement({
-					tagName: 'li',
-					parent: itemList,
-					children: [
-						{ tagName: 'input', properties: { type: 'checkbox' } },
-						{ tagName: 'span', properties: { innerText: addButton.previousSibling.value } },
-						{ tagName: 'button', properties: { innerText: 'Remove' } },
-					],
-				});
+				addItem(
+					registerEvents(
+						createElement({
+							tagName: 'li',
+							children: [
+								{ tagName: 'input', properties: { type: 'checkbox' } },
+								{ tagName: 'span', properties: { innerText: addButton.previousSibling.value } },
+								{ tagName: 'button', properties: { innerText: 'Remove' } },
+							],
+						})
+					)
+				);
+				updateCounter();
+			});
 
+			function addItem(item) {
+				const itemList = document.getElementById('itemList');
+				itemList.appendChild(item);
+			}
+
+			function registerEvents(item) {
 				const [checkbox, text, removeButton] = item.children;
 				checkbox.addEventListener('change', () => {
 					checkbox.checked ? (text.style.textDecoration = 'line-through') : (text.style.textDecoration = 'none'); // 아래 주석 처리한 구문보다 의미가 더 명확함
-					// text.style.textDecoration = checkbox.checked ? 'line-through' : 'none';
-
 					// 완료 카운터 업데이트
-					const completeCount = Array.from(itemList.children).filter(child => child.firstChild.checked).length;
-					const counter = document.getElementById('counter');
-					counter.lastChild.innerText = '' + completeCount;
-					console.log('checkbox changed');
+					updateCounter();
 				});
-
-				// 토탈 카운터를 업데이트
-				const counter = document.getElementById('counter');
-				counter.children[1].innerText = '' + itemList.children.length;
-
-				console.log('click', counter);
 
 				// 삭제 버튼 이벤트 처리
 				removeButton.addEventListener('click', () => {
 					item.remove();
-					// 카운터 전체 업데이트
-					const counter = document.getElementById('counter');
-					counter.children[1].innerText = '' + itemList.children.length;
-					// 완료 카운터 업데이트
-					const completeCount = Array.from(itemList.children).filter(child => child.firstChild.checked).length;
-					counter.lastChild.innerText = '' + completeCount;
+					updateCounter();
 				});
-			});
+
+				return item;
+			}
+
+			// 카운터 전체 업데이트
+			function updateCounter() {
+				const itemList = document.getElementById('itemList');
+				const counter = document.getElementById('counter');
+				counter.children[1].innerText = '' + itemList.children.length;
+				const completeCount = Array.from(itemList.children).filter(child => child.firstChild.checked).length;
+				counter.lastChild.innerText = '' + completeCount;
+				// console.log('total : ', itemList.children.length, ' completed : ', completeCount);
+			}
 
 			function createElement({ tagName, properties, parent, children, count = 1 }) {
 				const create = () => {
