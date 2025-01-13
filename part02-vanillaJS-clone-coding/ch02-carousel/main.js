@@ -22,11 +22,14 @@ box-sizing: border-box`;
 const wrapper = createElement({
 	tagName: 'div',
 	parent: app,
+	properties: { id: 'wrapper' },
 });
 wrapper.style.cssText = `width:100%;
 height: 100%;
 position:relative;
-display: flex;`;
+display: flex;
+overflow: hidden;
+`;
 
 const [prevButton, nextButton] = createElement({
 	tagName: 'button',
@@ -53,32 +56,65 @@ nextButton.style.right = '0';
 prevButton.innerHTML = iconPrev;
 nextButton.innerHTML = iconNext;
 
-const container = createElement({
+nextButton.onclick = () => {
+	itemContainer.style.transitionDuration = '0.5s';
+	itemContainer.style.transform = 'translateX(-700px)';
+
+	itemContainer.ontransitionend = () => {
+		// 제자리로 돌리기
+		itemContainer.style.removeProperty('transition-duration');
+		itemContainer.style.removeProperty('transform');
+
+		itemContainer.appendChild(itemContainer.firstChild);
+	};
+};
+prevButton.onclick = () => {
+	itemContainer.style.transitionDuration = '0.5s';
+	itemContainer.style.transform = 'translateX(700px)';
+};
+
+const itemContainer = createElement({
 	tagName: 'div',
 	parent: wrapper,
+	properties: { id: 'itemContainer' },
 });
-container.style.cssText = `width: 700px;
+itemContainer.style.cssText = `display:flex;`;
+
+addImageItem(itemContainer, './images/carousel_image_01.jpg');
+addImageItem(itemContainer, './images/carousel_image_02.jpg');
+addImageItem(itemContainer, './images/carousel_image_03.jpg');
+addImageItem(itemContainer, './images/carousel_image_04.jpg');
+
+function addImageItem(parent, src, captionText = 'Caption Text') {
+	const container = createElement({
+		tagName: 'div',
+		parent,
+		properties: { className: 'item' },
+	});
+	container.style.cssText = `width: 700px;
 height: 250px;
 display: flex;
 justify-content: center;
 align-items: center;
 overflow: hidden;`;
 
-const image = createElement({
-	tagName: 'img',
-	parent: container,
-	properties: { src: './images/carousel_image_01.jpg' },
-});
+	const image = createElement({
+		tagName: 'img',
+		parent: container,
+		properties: { src },
+	});
 
-const caption = createElement({
-	tagName: 'span',
-	properties: { innerText: 'Caption text' },
-	parent: container,
-});
-caption.style.cssText = `color:white;
+	const caption = createElement({
+		tagName: 'span',
+		properties: { innerText: captionText },
+		parent: container,
+	});
+	caption.style.cssText = `color:white;
 font-weight: bold;
 position:absolute;
 filter: drop-shadow(3px 3px 3px rgba(0,0,0,.5));`;
+	return container;
+}
 
 function createElement({ tagName, properties, parent, children, count = 1 }) {
 	const create = () => {
