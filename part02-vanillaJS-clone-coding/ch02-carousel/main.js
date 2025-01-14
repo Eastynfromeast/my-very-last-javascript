@@ -31,59 +31,67 @@ display: flex;
 overflow: hidden;
 `;
 
-const [prevButton, nextButton] = createElement({
-	tagName: 'button',
-	parent: wrapper,
-	count: 2,
-});
-
-prevButton.style.cssText = `position: absolute;
-z-index : 1;
-border: 0;
-top:0;
-width: 50px;
-height: 100%;
-background-color: transparent;
-background: linear-gradient(90deg, rgba(0,0,0,.3) 0%, rgba(0,0,0,.1) 30%, rgba(0,0,0,0) 100%);
-fillter: drop-shadow(3px 5px 2px rgba(0,0,0,0.7));
-`;
-
-nextButton.style.cssText = prevButton.style.cssText;
-nextButton.style.background = 'linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.1) 30%, rgba(0,0,0,0.3) 100%)';
-prevButton.style.left = '0';
-nextButton.style.right = '0';
-
-prevButton.innerHTML = iconPrev;
-nextButton.innerHTML = iconNext;
-
-nextButton.onclick = () => {
-	itemContainer.style.transitionDuration = '0.5s';
-	itemContainer.style.transform = 'translateX(-700px)';
-
-	itemContainer.ontransitionend = () => {
-		// 제자리로 돌리기
-		itemContainer.style.removeProperty('transition-duration');
-		itemContainer.style.removeProperty('transform');
-
-		itemContainer.appendChild(itemContainer.firstChild);
-	};
-};
-prevButton.onclick = () => {
-	itemContainer.style.transitionDuration = '0.5s';
-	itemContainer.style.transform = 'translateX(700px)';
-};
-
 const itemContainer = createElement({
 	tagName: 'div',
 	parent: wrapper,
 	properties: { id: 'itemContainer' },
 });
-itemContainer.style.cssText = `display:flex;`;
+itemContainer.style.cssText = `display:flex;
+transform:translate(-700px);`;
 
+addButtons();
+
+addImageItem(itemContainer, './images/carousel_image_04.jpg');
 addImageItem(itemContainer, './images/carousel_image_01.jpg');
 addImageItem(itemContainer, './images/carousel_image_02.jpg');
 addImageItem(itemContainer, './images/carousel_image_03.jpg');
-addImageItem(itemContainer, './images/carousel_image_04.jpg');
+
+function handleSlide(next = true) {
+	itemContainer.style.transitionDuration = '0.5s';
+	itemContainer.style.transform = `translateX(${next ? -1400 : 0}px)`;
+
+	itemContainer.ontransitionend = () => {
+		// 제자리로 돌리기
+		itemContainer.style.removeProperty('transition-duration');
+		itemContainer.style.transform = 'translateX(-700px)';
+
+		next ? itemContainer.appendChild(itemContainer.firstChild) : itemContainer.prepend(itemContainer.lastChild);
+	};
+}
+
+function addButtons() {
+	const [prevButton, nextButton] = createElement({
+		tagName: 'button',
+		parent: wrapper,
+		count: 2,
+	});
+
+	prevButton.style.cssText = `position: absolute;
+  z-index : 1;
+  border: 0;
+  top:0;
+  width: 50px;
+  height: 100%;
+  background-color: transparent;
+  background: linear-gradient(90deg, rgba(0,0,0,.3) 0%, rgba(0,0,0,.1) 30%, rgba(0,0,0,0) 100%);
+  fillter: drop-shadow(3px 5px 2px rgba(0,0,0,0.7));
+  `;
+
+	nextButton.style.cssText = prevButton.style.cssText;
+	nextButton.style.background = 'linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.1) 30%, rgba(0,0,0,0.3) 100%)';
+	prevButton.style.left = '0';
+	nextButton.style.right = '0';
+
+	prevButton.innerHTML = iconPrev;
+	nextButton.innerHTML = iconNext;
+
+	nextButton.onclick = () => {
+		handleSlide();
+	};
+	prevButton.onclick = () => {
+		handleSlide(false);
+	};
+}
 
 function addImageItem(parent, src, captionText = 'Caption Text') {
 	const container = createElement({
