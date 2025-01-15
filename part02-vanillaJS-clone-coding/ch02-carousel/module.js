@@ -1,4 +1,4 @@
-export default function makeCarousel() {
+export default function makeCarousel(itemList) {
 	const iconNext = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
 <path color="white" stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
 </svg>
@@ -27,11 +27,19 @@ overflow: hidden;
 transform:translate(-700px);`;
 
 	addButtons();
-
-	addImageItem(itemContainer, './images/carousel_image_04.jpg');
-	addImageItem(itemContainer, './images/carousel_image_01.jpg');
-	addImageItem(itemContainer, './images/carousel_image_02.jpg');
-	addImageItem(itemContainer, './images/carousel_image_03.jpg');
+	// itemList가 있는 경우 새로 아이템을 만들어서 추가
+	if (itemList) {
+		itemList.forEach(item => {
+			itemList = [...itemList.splice(-1), ...itemList];
+			addImageItem(itemContainer, item);
+		});
+	} else {
+		// 없을 떄는 기존처럼 동작
+		addImageItem(itemContainer, './images/carousel_image_04.jpg');
+		addImageItem(itemContainer, './images/carousel_image_01.jpg');
+		addImageItem(itemContainer, './images/carousel_image_02.jpg');
+		addImageItem(itemContainer, './images/carousel_image_03.jpg');
+	}
 
 	function handleSlide(next = true) {
 		itemContainer.style.transitionDuration = '0.5s';
