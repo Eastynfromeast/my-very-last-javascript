@@ -1,4 +1,11 @@
-export default function makeCarousel(itemList, visibleCount = 1, slideCount = 1) {
+/* 
+	caption 위치 값 받기 left top right bottom center middle 
+	'left top' 'right bottom'
+*/
+
+export default function makeCarousel(itemList, options) {
+	// options의 기본 값을 셋팅하고 다음에 들어올 값을 추가로 셋팅
+	const { visibleCount, slideCount, captionPos } = Object.assign({ visibleCount: 1, slideCount: 1, captionPos: 'center middle' }, options);
 	const iconNext = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
 <path color="white" stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
 </svg>
@@ -129,7 +136,8 @@ display: flex;
 justify-content: center;
 align-items: center;
 overflow: hidden;
-background-color: #000;`;
+background-color: #000;
+position:relative;`;
 
 		const image = createElement({
 			tagName: 'img',
@@ -147,6 +155,18 @@ background-color: #000;`;
 font-weight: bold;
 position:absolute;
 filter: drop-shadow(3px 3px 3px rgba(0,0,0,.5));`;
+
+		if (captionPos.includes('left')) {
+			caption.style.left = '10%';
+		} else if (captionPos.includes('right')) {
+			caption.style.right = '10%';
+		}
+		if (captionPos.includes('top')) {
+			caption.style.top = '20%';
+		} else if (captionPos.includes('bottom')) {
+			caption.style.bottom = '20%';
+		}
+
 		return container;
 	}
 	return wrapper;

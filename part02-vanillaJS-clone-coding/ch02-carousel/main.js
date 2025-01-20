@@ -11,9 +11,17 @@ background-color:rgb(100,100,100);
 box-sizing: border-box`;
 
 app.appendChild(
-	makeCarousel(['./images/carousel_image_04.jpg', './images/carousel_image_01.jpg', './images/carousel_image_02.jpg', './images/carousel_image_03.jpg'], 2, 2)
+	makeCarousel(['./images/carousel_image_04.jpg', './images/carousel_image_01.jpg', './images/carousel_image_02.jpg', './images/carousel_image_03.jpg'], {
+		visibleCount: 2,
+		slideCount: 2,
+		captionPos: 'left top',
+	})
 );
 app.appendChild(
-	makeCarousel(['./images/carousel_image_08.jpg', './images/carousel_image_09.jpg', './images/carousel_image_10.jpg', './images/carousel_image_11.jpg'], 3, 1)
+	makeCarousel(['./images/carousel_image_08.jpg', './images/carousel_image_09.jpg', './images/carousel_image_10.jpg', './images/carousel_image_11.jpg'], {
+		visibleCount: 3,
+		slideCount: 1,
+		captionPos: 'right bottom',
+	})
 );
-app.appendChild(makeCarousel());
+app.appendChild(makeCarousel(undefined, { captionPos: 'left' }));
