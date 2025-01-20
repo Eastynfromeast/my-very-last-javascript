@@ -1,4 +1,4 @@
-export default function makeCarousel(itemList, visibleCount = 3) {
+export default function makeCarousel(itemList, visibleCount = 1, slideCount = 1) {
 	const iconNext = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
 <path color="white" stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
 </svg>
@@ -46,13 +46,15 @@ transform:translateX(0)px);`;
 	function handleSlide(next = true) {
 		/* const clone = next ? itemContainer.firstChild.cloneNode(true) : undefined;
 		clone && itemContainer.appendChild(clone); */
-
-		if (next) {
-			itemContainer.appendChild(itemContainer.firstChild.cloneNode(true));
-		} else {
-			itemContainer.prepend(itemContainer.lastChild.cloneNode(true));
-			itemContainer.style.transform = `translateX(${-itemWidth}px)`; // 먼저 슬라이드 재배치
+		for (let i = 0; i < slideCount; ++i) {
+			const index = i & itemContainer.children.length;
+			if (next) {
+				itemContainer.appendChild(itemContainer.children[index].cloneNode(true));
+			} else {
+				itemContainer.prepend(itemContainer.children[itemContainer.children.length - index - 1].cloneNode(true));
+			}
 		}
+		next || (itemContainer.style.transform = `translateX(${-itemWidth * slideCount}px)`); // 먼저 슬라이드 재배치
 
 		/* 
     실행 시점 분리를 위해 setTimeout 사용 
@@ -69,14 +71,15 @@ transform:translateX(0)px);`;
 
 	function handleTransitionEnd(next) {
 		itemContainer.style.transitionDuration = '0.5s';
-		itemContainer.style.transform = `translateX(${next ? -itemWidth : 0}px)`;
+		itemContainer.style.transform = `translateX(${next ? -itemWidth * slideCount : 0}px)`;
 
 		itemContainer.ontransitionend = () => {
+			for (let i = 0; i < slideCount; ++i) {
+				next ? itemContainer.firstChild.remove() : itemContainer.lastChild.remove();
+			}
 			// 제자리로 돌리기
 			itemContainer.style.removeProperty('transition-duration');
 			itemContainer.style.transform = `translateX(0px)`;
-
-			next ? itemContainer.firstChild.remove() : itemContainer.lastChild.remove();
 		};
 	}
 
